@@ -2,22 +2,18 @@ package titan;
 
 import battlecode.common.*;
 
-import java.util.Queue;
-import java.util.Stack;
 
 public strictfp class RobotPlayer {
     static RobotController rc;
-
+    static final int RALLYFREQUENCY = 1;
 
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
 
-        // This is the RobotController object. You use it to perform actions from this robot,
-        // and to get information on its current status.
+        // RobotController object for this robot
+
         RobotPlayer.rc = rc;
 
-        // Here, we've separated the controls into a different method for each RobotType.
-        // You can add the missing ones or rewrite this into your own control structure.
         switch (rc.getType()) {
             case ARCHON:
                 runArchon();
@@ -39,34 +35,46 @@ public strictfp class RobotPlayer {
                 break;
         }
     }
+
     // Enum of the actions an archon might want to take
     public enum ArchonAction {
 
         OBSERVE, // Sense trees, consider bullet supply
-        FLEE, // Run from an enemy
-        DODGE, // Avoid taking damage from bullets
+        FLEE, // Run from an enemy or bullets
         EXPLORE, // Move to a new area
-        UNBLOCK, // Avoid being trapped by gardeners
-        PRODUCE, // Produce a gardener
-        REQUEST, // Request gardener produce combat units
         DEFOREST, // Request lumberjack to remove terrain
-        PLAN, // Plan a gardening or production setup
+        SETUPFARM, // Plan a simple gardening setup
+        SETUPBARRACKS, // Plan a light production setup
+        SETUPFACTORY, // Plan a heavy production setup
         RALLY, // Coordinate an attack
-
 
     }
     public static void runArchon() throws GameActionException {
         // Begin in the observe state
         ArchonAction action = ArchonAction.OBSERVE;
-        Stack<MapLocation> prospectiveGardens;
 
+
+        int simpleGardeners = 0; // Gardeners only capable of producing scouts
+        int lightProducers = 0; // Gardeners designed to produce units
+        int heavyProducers = 0; // Gardeners designed to produce tanks
 
         while(true) {
             try{
                 switch (action){
                     case OBSERVE:
-                        // TODO: Check for enemy threat, 
+                        // TODO: Check for enemy threat, check for neutral trees, update local Archon storage, decide whether to explore, or take various macro-actions
                         break;
+                    case EXPLORE:
+                        // TODO: Find a suitable farming location if none are available, avoid becoming trapped in production structures
+                        break;
+                    case FLEE:
+                        // TODO: Run away from enemies and dodge bullets if necessary
+                        break;
+                    case DEFOREST:
+                        // TODO: Broadcast location of a tree to lumberjacks
+                        break;
+                    case SETUPFARM:
+                        // TODO: Spawn gardener, broadcast location for farm
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -74,33 +82,51 @@ public strictfp class RobotPlayer {
         }
 
     }
+
     // Enum of the actions a gardener might want to take
     public enum GardenerAction {
 
-        WAIT, // Wait several turns for assignment from Archon
         FLEE, // Run from an enemy
         LISTEN, // Listen for requests from Archon
-        PLANT, // Plant trees until saturated
-        YIELD, // Move out of the way of another unit
-        PUTTER, // Move towards tree in queue
-        TEND, // Water and shake tree in queue, move to bottom
-        REROUTE, // Compute a better route among trees
-        PRODUCE, // Fulfill requests made by Archons
+        GENPATH, // Generate a path given a center location
+        PLANT, // Plant trees in path
+        GARDEN, // Move through queue, water and shake
+        PRODUCE, // Produce units
 
     }
     public static void runGardener() throws GameActionException {
 
+        GardenerAction action = GardenerAction.LISTEN;
+        static Step[] path; // Holds the pattern that the gardener is responsible for
+        while(true) {
+            try{
+                switch(action){
+                    case LISTEN:
+                        // TODO: Read broadcast from
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
     public static void runSoldier() throws GameActionException {
-
+        ;
     }
     public static void runLumberjack() throws GameActionException {
-
+        ;
     }
     public static void runTank() throws GameActionException {
-
+        ;
     }
     public static void runScout() throws GameActionException {
+        ;
+    }
 
+    static MapLocation randomLocation(MapLocation center, float radius) {
+        return center.add((float)(Math.random()*2*Math.PI), (float)(Math.random()*radius));
     }
 }
+
